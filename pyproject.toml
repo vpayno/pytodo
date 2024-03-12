@@ -28,15 +28,21 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [tool.pdm.dev-dependencies]
-dev1 = ["pytest", "pytest-randomly", "pytest-datafiles", "pytest-cov"]
-dev2 = ["mypy", "mypy-extensions"]
-dev3 = ["pyright"]
-dev4 = ["refurb"]
-dev5 = ["ruff"]
-dev6 = ["pylint"]
-dev7 = ["bandit"]
-dev8 = ["mkdocs"]
-dev9 = ["pdoc3"]
+dev = [
+    "pytest>=8.1.1",
+    "pytest-cov>=4.1.0",
+    "pytest-randomly>=3.15.0",
+    "pytest-datafiles>=3.0.0",
+    "mypy>=1.9.0",
+    "mypy-extensions>=1.0.0",
+    "pyright>=1.1.353",
+    "refurb>=2.0.0",
+    "ruff>=0.3.2",
+    "pylint>=3.1.0",
+    "bandit>=1.7.8",
+    "mkdocs>=1.5.3",
+    "pdoc3>=0.10.0",
+]
 
 [tool.pdm.version]
 source = "scm"
