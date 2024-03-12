@@ -1,0 +1,124 @@
+[project]
+name = "pytodo"
+description = "ToDo tracker CLI written in Python"
+authors = [
+    {name = "Victor Payno", email = "vpayno@users.noreply.github.com"},
+]
+maintainers = [
+    {name = "Victor Payno", email = "vpayno@users.noreply.github.com"},
+]
+dependencies = [
+]
+requires-python = ">=3.12"
+dynamic = ["version"]
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["pytodo", "cli", "terminal"]
+
+[project.urls]
+"Homepage" = "https://github.com/vpayno/pytodo"
+"Bug Tracker" = "https://github.com/vpayno/pytodo/issues"
+"Repository" = "https://github.com/vpayno/pytodo.git"
+"Changelog" = "https://github.com/vpayno/pytodo/releases"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev1 = ["pytest", "pytest-randomly", "pytest-datafiles", "pytest-cov"]
+dev2 = ["mypy", "mypy-extensions"]
+dev3 = ["pyright"]
+dev4 = ["refurb"]
+dev5 = ["ruff"]
+dev6 = ["pylint"]
+dev7 = ["bandit"]
+dev8 = ["mkdocs"]
+dev9 = ["pdoc3"]
+
+[tool.pdm.version]
+source = "scm"
+write_to = "pytodo/_version.py"
+write_template = "__version__ = '{}'"
+
+[tool.pdm]
+package-type = "library"
+
+# https://pdm-project.org/latest/usage/scripts/
+[tool.pdm.scripts]
+main = { call = "pytodo:main" }
+module = { shell = "python -m pytodo" }
+
+clean_docs = { shell = "rm -rf html mkdocs pytodo.html pytodo.md pytodo.txt" }
+clean_pycache = { shell = "find . -type f -name '*.py[co]' -delete -print -o -type d -name __pycache__ -delete -print" }
+clean_build = { shell = "rm -rf dist" }
+clean = { composite = ["clean_docs", "clean_pycache", "clean_build"] }
+
+format = { shell = "ruff format" }
+
+ruff = { shell = "ruff check" }
+pylint = { shell = "pylint --ignore-patterns='_[a-z][a-z0-9_-]+.py' ./src ./test" }
+pyright = { shell = "pyright --stats" }
+refurb = { shell = "refurb ./src ./test" }
+bandit = { shell = "bandit --verbose --recursive ./src" }
+mypy = { shell = "mypy --install-types --non-interactive ./src ./test" }
+lint = { composite = ["ruff", "pyright", "pylint", "refurb", "mypy"] }
+
+doctest = { shell = "python -m doctest -v ./src/*/[a-z]*.py" }
+pytest = { shell = "pytest --verbose --cov=. --cov-branch --cov-report=term-missing --cov-report=xml:.coverage.xml -p no:randomly ./test" }
+coverage_report = { shell = "coverage report --show-missing" }
+coverage_annotate = { shell = "coverage annotate" }
+test = { composite = ["doctest", "pytest"] }
+
+pydoc_text = { shell = "python -m pydoc pytodo | tee pytodo.txt" }
+pydoc_html = { shell = "python -m pydoc -w pytodo" }
+pdoc_html = { shell = "pdoc --html --force ." }
+mkdocs = { shell = "mkdocs new mkdocs && cd mkdocs && echo theme: readthedocs >> mkdocs.yml && yq --yaml-output . mkdocs.yml | sponge mkdocs.yml && mkdocs build" }
+doc = { composite = ["pydoc_text", "pydoc_html", "pdoc_html", "mkdocs"] }
+
+full = { composite = ["clean", "format", "lint", "test", "doc"] }
+
+[tool.pyright]
+include = ["src", "test"]
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+# select = []
+# ignore = []
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+strict_equality =true
+warn_return_any = true
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip_gitignore = true
+
+[project.scripts]
+pytodo = "pytodo.main:main"
