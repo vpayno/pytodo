@@ -28,65 +28,6 @@ keywords = ["pytodo", "cli", "terminal"]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-[tool.pdm.dev-dependencies]
-dev = [
-    "pytest>=8.1.1",
-    "pytest-cov>=4.1.0",
-    "pytest-randomly>=3.15.0",
-    "pytest-datafiles>=3.0.0",
-    "mypy>=1.9.0",
-    "mypy-extensions>=1.0.0",
-    "pyright>=1.1.353",
-    "refurb>=2.0.0",
-    "ruff>=0.3.2",
-    "pylint>=3.1.0",
-    "bandit>=1.7.8",
-    "mkdocs>=1.5.3",
-    "pdoc3>=0.10.0",
-]
-
-[tool.pdm.version]
-source = "scm"
-write_to = "pytodo/_version.py"
-write_template = "__version__ = '{}'"
-
-[tool.pdm]
-package-type = "library"
-
-# https://pdm-project.org/latest/usage/scripts/
-[tool.pdm.scripts]
-main = { call = "pytodo:main" }
-module = { shell = "python -m pytodo" }
-
-clean_docs = { shell = "rm -rf html mkdocs pytodo.html pytodo.md pytodo.txt" }
-clean_pycache = { shell = "find . -type f -name '*.py[co]' -delete -print -o -type d -name __pycache__ -delete -print" }
-clean_build = { shell = "rm -rf dist" }
-clean = { composite = ["clean_docs", "clean_pycache", "clean_build"] }
-
-format = { shell = "ruff format" }
-
-ruff = { shell = "ruff check" }
-pylint = { shell = "pylint --ignore-patterns='_[a-z][a-z0-9_-]+.py' ./src ./test" }
-pyright = { shell = "pyright --stats" }
-refurb = { shell = "refurb ./src ./test" }
-bandit = { shell = "bandit --verbose --recursive ./src" }
-mypy = { shell = "mypy --install-types --non-interactive ./src ./test" }
-lint = { composite = ["ruff", "pyright", "pylint", "refurb", "mypy"] }
-
-doctest = { shell = "python -m doctest -v ./src/*/[a-z]*.py" }
-pytest = { shell = "pytest --verbose --cov=. --cov-branch --cov-report=term-missing --cov-report=xml:.coverage.xml -p no:randomly ./test" }
-coverage_report = { shell = "coverage report --show-missing" }
-coverage_annotate = { shell = "coverage annotate" }
-test = { composite = ["doctest", "pytest"] }
-
-pydoc_text = { shell = "python -m pydoc pytodo | tee pytodo.txt" }
-pydoc_html = { shell = "python -m pydoc -w pytodo" }
-pdoc_html = { shell = "pdoc --html --force ." }
-mkdocs = { shell = "mkdocs new mkdocs && cd mkdocs && echo theme: readthedocs >> mkdocs.yml && yq --yaml-output . mkdocs.yml | sponge mkdocs.yml && mkdocs build" }
-doc = { composite = ["pydoc_text", "pydoc_html", "pdoc_html", "mkdocs"] }
-
-full = { composite = ["clean", "format", "lint", "test", "doc"] }
-
 [tool.pyright]
 include = ["src", "test"]
 
@@ -128,6 +69,63 @@ line-length = 120
 profile = "black"
 line_length = 120
 skip_gitignore = true
+
+[tool.pdm]
+distribution = true
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest>=8.1.1",
+    "pytest-cov>=4.1.0",
+    "pytest-randomly>=3.15.0",
+    "pytest-datafiles>=3.0.0",
+    "mypy>=1.9.0",
+    "mypy-extensions>=1.0.0",
+    "pyright>=1.1.353",
+    "refurb>=2.0.0",
+    "ruff>=0.3.2",
+    "pylint>=3.1.0",
+    "bandit>=1.7.8",
+    "mkdocs>=1.5.3",
+    "pdoc3>=0.10.0",
+]
+
+[tool.pdm.version]
+source = "scm"
+write_to = "pytodo/_version.py"
+write_template = "__version__ = '{}'"
+
+[tool.pdm.scripts]
+main = { call = "pytodo:main" }
+module = { shell = "python -m pytodo" }
+
+clean_docs = { shell = "rm -rf html mkdocs pytodo.html pytodo.md pytodo.txt" }
+clean_pycache = { shell = "find . -type f -name '*.py[co]' -delete -print -o -type d -name __pycache__ -delete -print" }
+clean_build = { shell = "rm -rf dist" }
+clean = { composite = ["clean_docs", "clean_pycache", "clean_build"] }
+
+format = { shell = "ruff format" }
+
+ruff = { shell = "ruff check" }
+pylint = { shell = "pylint --ignore-patterns='_[a-z][a-z0-9_-]+.py' ./src ./test" }
+pyright = { shell = "pyright --stats" }
+refurb = { shell = "refurb ./src ./test" }
+bandit = { shell = "bandit --verbose --recursive ./src" }
+mypy = { shell = "mypy --install-types --non-interactive ./src ./test" }
+lint = { composite = ["ruff", "pyright", "pylint", "refurb", "mypy"] }
+
+doctest = { shell = "python -m doctest -v ./src/*/[a-z]*.py" }
+pytest = { shell = "pytest --verbose --cov=. --cov-branch --cov-report=term-missing --cov-report=xml:.coverage.xml -p no:randomly ./test" }
+coverage_report = { shell = "coverage report --show-missing" }
+coverage_annotate = { shell = "coverage annotate" }
+test = { composite = ["doctest", "pytest"] }
+
+pydoc_text = { shell = "python -m pydoc pytodo | tee pytodo.txt" }
+pydoc_html = { shell = "python -m pydoc -w pytodo" }
+pdoc_html = { shell = "pdoc --html --force ." }
+mkdocs = { shell = "mkdocs new mkdocs && cd mkdocs && echo theme: readthedocs >> mkdocs.yml && yq --yaml-output . mkdocs.yml | sponge mkdocs.yml && mkdocs build" }
+doc = { composite = ["pydoc_text", "pydoc_html", "pdoc_html", "mkdocs"] }
+
+full = { composite = ["clean", "format", "lint", "test", "doc"] }
 
 [project.scripts]
 pytodo = "pytodo.main:main"
