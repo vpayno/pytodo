@@ -170,3 +170,6 @@ cython_debug/
 /pytodo.html
 /pytodo.md
 /pytodo.txt
+
+# Ignore sqlite3 dbs
+*.db
